@@ -1,0 +1,53 @@
+
+# 0     1     2   3     4                     5            6                  7         8        9           10      11
+# JOB STATO SLAVE PIN  MESE              GIORNO_NR         GIORNO_W       START-STOP    CMD    VALUEON     VALUEOFF   NOME_DISPOSITIVO
+  1     A    12   1    nov                    22-28        *              15:50-23:20   WDig      1            0      Rele_Pompa
+  2     A    12   2    *                      10           y-n-y-n-y-n-n  11:40-12:07   WDig      1            0      Rele_Pompa_2
+
+  3     S    11   Ax   gen-mar                *            *              17:01-17:30   WAna      54           0      REle_Elettrovalvola
+  4     S    12   y    gen-mar                *            *              17:02-17:30   WPwm      54           0      REle_Pompa
+  5     S    12   x    giu-ago                *            *              17:03-17:30   RDig      -            -      REle_Pompa
+  6     S    12   Ax   nov                    *            *              17:04-17:30   RAna      -            -      REle_Pompa
+  7     S    12   x    nov                    *            *              17:05-17:30   RPwm      -            -      REle_Pompa
+
+  8     S    12   x    nov                    *            *              17:06-17:30   RI2c      03.45.87     -      REle_Pompa
+  9     S    12   z    nov                    *            *              17:07-17:30   WI2c      01.32.94     -      REle_Pompa
+
+ 10     S    12   A1   nov                    *            *              17:08-17:30   WI2c      01.32.94     -      REle_Pompa
+ 11     S    12   2    nov                    *            *              17:09-17:30   WI2c      01.32.94     -      REle_Pompa
+
+ 12     A    12   2    gen-mar,giu-lug,ott    *            y-n-y-n-y-n-n  11:40-12:07   WDig      1            0      Rele_Pompa_2
+ 13     A    12   3    gen-mar,ott-dic,giu    10-20        y-n-y-n-y-n-y  10:20-12:07   WDig      1            0      Rele_Pompa_3
+ 14     A    12   4    gen-mar,giu,set-ott    5-10,12-14   y-n-y-n-y-n-n  11:40-12:07   WDig      1            0      Cancello porta
+ 15     A    12   4    nov,gen-mar            *            y-n-y-n-y-n-n  21:00-22:31   WDig      1            0      Cancello porta TV
+ 16     A    12   6    *                      11,25        y-n-y-n-y-n-y  06:00-22:31   WDig      1            0      Cancello est
+ 17     A    12   6    nov                    1-30         *              06:00-22:31   WDig      1            0      Cancello est
+ 18     A    12   6    *                      *            *              06:00-06:01   WDig      1            0      Pompa 2 work
+
+# Attenzione il primo campo del nostro campo 6 (GIORNO_W) e' la domenica !!!
+# 16/11 Per il campo 6 GIORNO_W. I campi sono dom-lun-mar-mer-gio-ven-sab  indice 0-1-2-3-4-5-6
+# 16/11 ho messo i trattini nel campo 6
+
+
+# address, pinNO = Slave.split('.')
+
+# job, stato, Slave, mese, ... = riga.split('')
+
+
+
+
+# regole il - tra due valori indica da a   es:gen-apr indica i mesi di gennaio+marzo+aprile
+#        il * indica sempre
+#        il : indica la separazione tra ore e minuti es.17:40
+#        il - da solo indica il riempitivo di un campo che non si usa
+
+
+
+# Per i pin di Arduino, facendo riferimento alle istruzioni di Arduino stesso, sono
+# pin digitali     1, 2, 7, 8       <---- INPUT
+# pin    "         10, 11, 12, 13   ----> OUTPUT
+# pin   i2c        4, 5             <---> I2C
+# pin analogici    A0, A1, A2, A3   <---- INPUT             controllo   !!!
+# pin    "         A4, A5, A6, A7   ----> OUTPUT            controllo   !!!
+
+# pin per la linea 485 -> 2,3,4

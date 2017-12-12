@@ -1,0 +1,130 @@
+
+import datetime
+################################################################################
+# Legge una riga per volta il file dati
+################################################################################
+def ReadFile1(myFile, lineCmntStr=None):
+    dati = []                    # crea lista vuota di nome 'dati'
+    f = open(myFile, "r")
+    for line in f:
+        line = line.strip()      # remove BLANKS
+        if not line:
+            continue
+        if lineCmntStr and line[0] == lineCmntStr: # se vuoi verificare commento ed il primo char della riga == commento... continua
+            continue
+        line = line.strip('\n')  # rimuovi il newLine
+        dati.append(line)        # mette le righe in dati
+    f.close()
+    return dati
+# fine lettura file dati #######################################################
+
+################################################################################
+# COMPARA LE ORE: specificate nell'intervallo da HH:MM-HH:MM se c'e' * e' sempre
+################################################################################
+def compara_ora1(start_stop, OraOra):
+
+    FOUND = False
+
+    (OraStart, OraStop) = (start_stop.split('-'))     # spezza gli orari
+
+    (Ah, Am) = (OraOra.split(':'))                    # spezza ore e minuti
+    OraOra_min = int(Ah)*60+int(Am)                   # converte in minuti
+
+    (Ah, Am) = (OraStart.split(':'))                  # spezza ore e minuti
+    OraStart_min = int(Ah)*60+int(Am)                 # converte in minuti
+
+    (Ah, Am) = (OraStop.split(':'))                   # spezza ore e minuti
+    OraStop_min = int(Ah)*60+int(Am)                  # converte in minuti
+
+    if OraStart_min <= OraOra_min <= OraStop_min: FOUND = True
+
+    return FOUND # ritorna True se una condizione e' stata trovata
+# fine compara ore #############################################################
+
+################################################################################    new new new
+# COMPARA GIORNO SETTIMANA: verifica se giorno ok per lavoro (dom=0, lun=1 ..)     da controllare ------------------------------!!!
+################################################################################
+def compara_giorno_w1(giorno_w):       # giorno numerico della settimana
+
+    FOUND = False
+
+    tempo = datetime.datetime.now()
+    if (giorno_w == '*'):   #trovato l'* setta FOUND ed esce
+        FOUND = True
+    else:
+        ranges = giorno_w.split('-') #da str a int
+        # sotto: trova il nr del giorno attuale, per es. giovedi e' =4, dom=0
+        Giorno_w_Ora = int(tempo.today().strftime("%w"))    #da str a int
+        ranges = giorno_w.split('-') #splitta il campo ranges
+        point = -1              # puntatore per partire con lo zero al primo index
+
+        for item in ranges:
+            point = point + 1
+            giorni = item.split('-')
+            if (item == 'y' and point == Giorno_w_Ora): # trovato valore
+                FOUND = True
+    return FOUND # ritorna True se una condizione corretta e' stata trovata
+# fine compara giorno numerico della settimana #################################
+
+################################################################################
+# COMPARA I MESI: specificati nell'intervallo separati da - oppure con *
+################################################################################
+def compara_mese1(month):
+
+    FOUND = False
+
+    tempo = datetime.datetime.now()
+    MeseOra_nr = tempo.month
+    MESI = ['*', 'gen', 'feb', 'mar', 'apr','mag','giu','lug','ago','set','ott','nov','dic']
+
+    ranges = month.split(',')       # split del valore in eventuali range
+    for item in ranges:             # loop su tutti gli item in ranges
+        # ======================================================================
+        if '-' in item:             # con il - trova i 2 mesi da-a
+            mesi = item.split('-')
+            (MeseStart, MeseStop) = (item.split('-'))     # spezza i mesi
+            # ------------------------------------------------------------------
+            for index in range(len(MESI)):  # converte mese Start in mese numero
+                if (MESI[index] == MeseStart): MeseStart_nr = index
+            # ------------------------------------------------------------------
+            for index in range(len(MESI)):  # converte mese Stop in mese numero
+                if (MESI[index] == MeseStop): MeseStop_nr = index
+            # ------------------------------------------------------------------
+            # sotto: compara se siamo nel range o no tra MeseStart_nr e MeseStop_nr
+            if MeseStart_nr <= MeseOra_nr  <= MeseStop_nr:
+                FOUND = True
+                break
+        else:                       # altrimenti mette item in mesi
+            mesi = [item]
+        # ======================================================================
+        for mese in mesi:   # verifica se il mese e' lo stesso oppure se c'e' '*'
+            for index in range(len(MESI)):
+                if (MESI[index] == mese): mese_nr = index
+            if mese_nr == MeseOra_nr or mese == '*':  # trovato mese uguale o '*'
+                FOUND = True
+                break
+    return FOUND # ritorna True se una condizione corretta e' stata trovata
+# fine compara_mese ############################################################
+
+################################################################################
+# COMPARA I GIORNI: specificati nell'intervallo separati da - oppure con *
+################################################################################
+def compara_giorno_nr1(giorno_nr):
+
+    FOUND = False
+
+    tempo = datetime.datetime.now()
+    GiornoOra_Nr = tempo.day
+
+    ranges = giorno_nr.split(',')       # split del valore in eventuali range
+    for item in ranges:             # loop su tutti gli item in ranges
+       # ======================================================================
+        if '-' in item:             # con il - trova i due orari separati  da-a
+            (GiornoStart, GiornoStop) = item.split('-')       # spezza le date
+            if int(GiornoStart) <= GiornoOra_Nr  <= int(GiornoStop): FOUND = True
+        else:
+            if (item == '*'):
+                FOUND = True
+
+    return FOUND # ritorna True se una condizione corretta e' stata trovata
+# fine compara giorni nr #######################################################
